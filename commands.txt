@@ -1,0 +1,1 @@
+make startapp name=auth

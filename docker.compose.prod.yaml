@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: web
+    command: gunicorn ecobazar.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    volumes:
+      - static_folder:/app/static
+      - media_file:/app/media
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    env_file:
+      - .env
+
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - media_file:/app/media
+      - static_files:/app/staticfiles
+    depends_on:
+      - web
+
+volumes:
+  media_file:
+  static_files:

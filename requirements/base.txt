@@ -1,0 +1,16 @@
+Django
+djangorestframework
+djoser
+pillow
+psycopg2-binary
+django-environ
+django-debug-toolbar
+drf-spectacular
+drf-material
+rest-framework-redesign
+django-redis
+djangorestframework-simplejwt
+django-ratelimit
+drf-spectacular-sidecar
+icecream
+celery
