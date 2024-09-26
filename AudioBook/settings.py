@@ -52,12 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.user.apps.UserConfig',
 ]
 
 THIRD_APPS = [
-    "debug_toolbar",
     # 'rest_framework_redesign',
     # 'drf_material',
+    "debug_toolbar",
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -72,15 +73,14 @@ THIRD_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.user.apps.UserConfig',
     'apps.base.apps.BaseConfig',
     'apps.category.apps.CategoryConfig',
     'apps.notification.apps.NotificationConfig',
     'apps.subscription.apps.SubscriptionConfig'
 ]
 
-INSTALLED_APPS += THIRD_APPS
 INSTALLED_APPS += LOCAL_APPS
+INSTALLED_APPS += THIRD_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -210,12 +210,13 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # OAuth
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'drf_social_oauth2.authentication.SocialAuthentication',
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        # 'drf_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [

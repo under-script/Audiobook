@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils.html import format_html
 
+from apps.user.models import UserCategory
+
 User = get_user_model()
 
 
@@ -17,5 +19,9 @@ class UserAdmin(admin.ModelAdmin):
 
     get_avatar.short_description = 'Image'
 
+class UserCategoryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'category')
+
 
 admin.site.register(User, UserAdmin)
+admin.site.register(UserCategory, UserCategoryAdmin)

@@ -11,7 +11,7 @@ from apps.category.models import Category
 
 class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()  # noqa
-    serializer_class = serializers.CategorySerializer
+    serializer_class = serializers.CategoryListSerializer
     search_fields = ['name']
 
     def get_queryset(self):
@@ -35,7 +35,7 @@ class CategoryListAPIView(generics.ListAPIView):
 
 class CategoryDetailAPIView(generics.RetrieveAPIView):
     queryset = Category.objects.all()  # noqa
-    serializer_class = serializers.CategorySerializer
+    serializer_class = serializers.CategoryDetailSerializer
 
     def get_object(self):
         pk = self.kwargs.get('pk')
@@ -96,7 +96,7 @@ class CategoryUpdateAPIView(generics.UpdateAPIView):
 
 class CategoryDeleteAPIView(generics.DestroyAPIView):
     queryset = Category.objects.all()  # noqa
-    serializer_class = serializers.CategorySerializer
+    serializer_class = serializers.CategoryDetailSerializer
     permission_classes = (IsAdminUser,)
 
     @extend_schema(operation_id='deleteCategory', tags=['Category'])

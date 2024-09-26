@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from apps.base.TimeStampModel import TimeStampModel
 from apps.category.models import Category
 from apps.user.validators import validate_image
 
@@ -22,3 +23,18 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class UserCategory(TimeStampModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'category')
+
+    # def __str__(self):
+    #     return f"{self.user} - {self.category}"
+
+#
+# class UserProfile(TimeStampModel):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     categories = models.ManyToManyField(Category, through='UserCategory')

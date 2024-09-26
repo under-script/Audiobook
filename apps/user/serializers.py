@@ -5,7 +5,11 @@ from django.contrib.auth.password_validation import validate_password
 from djoser.serializers import TokenCreateSerializer
 from icecream import ic
 from rest_framework import serializers
+from rest_framework.fields import ReadOnlyField
 from rest_framework_simplejwt.tokens import RefreshToken
+from typing_extensions import ReadOnly
+
+from apps.user.models import UserCategory
 
 User = get_user_model()
 
@@ -129,4 +133,28 @@ class CustomTokenCreateSerializer(serializers.Serializer):
 
         return data
 
+class UserCategoryListSerializer(serializers.ModelSerializer):
+    category_name = ReadOnlyField(source="category.name")
+    class Meta:
+        model = UserCategory
+        fields = ["id", "category", "category_name"]
 
+
+class UserCategoryDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCategory
+        fields = '__all__'
+
+
+class UserCategoryCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCategory
+        fields = ["id", 'category']
+        read_only_fields = ["id"]
+
+
+class UserCategoryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserCategory
+        fields = ["id", 'category']
+        read_only_fields = ["id"]
