@@ -14,3 +14,4 @@ django-ratelimit
 drf-spectacular-sidecar
 icecream
 celery
+drf_social_oauth2

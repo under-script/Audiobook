@@ -6,6 +6,7 @@ from apps.user.validators import validate_image
 
 
 class User(AbstractUser):
+    password = models.CharField(max_length=128, null=True, blank=True)
     username = models.CharField(max_length=20, null=True, blank=True, unique=True)
     phone = models.CharField(max_length=9, null=True, blank=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/avatar_default.png',
@@ -13,7 +14,7 @@ class User(AbstractUser):
                               help_text='Upload an avatar image. If not provided, a default image will be used.')
     full_name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=100, unique=True)
-    categories = models.ManyToManyField(Category, related_name='users')
+    categories = models.ManyToManyField(Category, related_name='users', blank=True)
     remember_me = models.BooleanField(default=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     USERNAME_FIELD = "email"

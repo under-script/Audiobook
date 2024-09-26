@@ -55,16 +55,20 @@ INSTALLED_APPS = [
 ]
 
 THIRD_APPS = [
-    'djoser',
     "debug_toolbar",
-    'rest_framework_redesign',
-    'drf_material',
+    # 'rest_framework_redesign',
+    # 'drf_material',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    'djoser',
+    # OAuth
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
 ]
 
 LOCAL_APPS = [
@@ -72,6 +76,7 @@ LOCAL_APPS = [
     'apps.base.apps.BaseConfig',
     'apps.category.apps.CategoryConfig',
     'apps.notification.apps.NotificationConfig',
+    'apps.subscription.apps.SubscriptionConfig'
 ]
 
 INSTALLED_APPS += THIRD_APPS
@@ -102,6 +107,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # OAuth
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -154,6 +162,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
 
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {},
+    # mine
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    # 'SET_PASSWORD_RETYPE': True,
+    # 'LOGOUT_ON_PASSWORD_CHANGE': True, # Logout only works with token based authentication.
+    # 'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+}
+
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -188,8 +210,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
+        # OAuth
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'drf_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
@@ -216,4 +242,30 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
+}
+
+AUTHENTICATION_BACKENDS = (
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+
+    # drf-social-oauth2
+    'drf_social_oauth2.backends.DjangoOAuth2',
+
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "FgtjDFgA2VAK8V9z0QY9hpCsnuKOWLpGCu0ymZEe"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "c7btuiuB8d85146F4AFzljB3T0xGK6C4sikQreB4NCFQwhKDKpHxqqNDY4aUNIpVOURRyAqp08cHQnEVizyLwlmxEJZ8lxk1f2BP5z2iUsdcXtxckrR7gNzqzZ5P0dv8"
+
+# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 604800,  # 7 days
+    # 'ACCESS_TOKEN_EXPIRE_SECONDS': 900,  # 15 minutes
 }
