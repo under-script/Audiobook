@@ -159,7 +159,7 @@ class UserCategoryUpdateSerializer(serializers.ModelSerializer):
         fields = ["id", 'category']
         read_only_fields = ["id"]
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'full_name', 'username', 'email', 'phone', 'birth_date']

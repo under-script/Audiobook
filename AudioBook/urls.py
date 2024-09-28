@@ -45,7 +45,7 @@ spectacular_urls = [
 jwt_urls = [
     # path('api-auth/', include('rest_framework.urls')),
     # Then include Djoser's URLs
-    path('auth/', include('djoser.urls')),
+    # path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 
     # Custom JWT endpoints first
