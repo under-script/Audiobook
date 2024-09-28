@@ -1,0 +1,2 @@
+/auth/users/ - post
+/auth/token/login/ - post

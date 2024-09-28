@@ -18,10 +18,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
-from rest_framework_simplejwt.views import TokenRefreshView
 
 from AudioBook import settings
-from apps.user.views import CustomTokenCreateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +27,6 @@ urlpatterns = [
 ]
 
 api_urls = [
-    path('auth/', include('apps.user.router')),
     path('user/', include('apps.user.urls')),
     path('notification/', include('apps.notification.urls')),
     path('categories/', include('apps.category.urls')),
@@ -45,6 +42,7 @@ spectacular_urls = [
 jwt_urls = [
     # path('api-auth/', include('rest_framework.urls')),
     # Then include Djoser's URLs
+    path('auth/', include('apps.user.router')),
     # path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 

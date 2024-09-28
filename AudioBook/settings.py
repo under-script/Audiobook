@@ -163,6 +163,37 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
 
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'apps.user.serializers.CustomUserCreateSerializer',
+        'user': 'apps.user.serializers.CustomUserSerializer',
+        'current_user': 'apps.user.serializers.CustomUserSerializer',
+    }
+}
+
+# DJOSER = {
+#     'activation': 'djoser.serializers.ActivationSerializer',
+#     'password_reset': 'djoser.serializers.SendEmailResetSerializer',
+#     'password_reset_confirm': 'djoser.serializers.PasswordResetConfirmSerializer',
+#     'password_reset_confirm_retype': 'djoser.serializers.PasswordResetConfirmRetypeSerializer',
+#     'set_password': 'djoser.serializers.SetPasswordSerializer',
+#     'set_password_retype': 'djoser.serializers.SetPasswordRetypeSerializer',
+#     'set_username': 'djoser.serializers.SetUsernameSerializer',
+#     'set_username_retype': 'djoser.serializers.SetUsernameRetypeSerializer',
+#     'username_reset': 'djoser.serializers.SendEmailResetSerializer',
+#     'username_reset_confirm': 'djoser.serializers.UsernameResetConfirmSerializer',
+#     'username_reset_confirm_retype': 'djoser.serializers.UsernameResetConfirmRetypeSerializer',
+#     # 'user_create': 'djoser.serializers.UserCreateSerializer',
+#     'user_create': 'user.serializers.UserCreateSerializer',
+#     # 'user_create_password_retype': 'djoser.serializers.UserCreatePasswordRetypeSerializer',
+#     'user_delete': 'djoser.serializers.UserDeleteSerializer',
+#     'user': 'djoser.serializers.UserSerializer',
+#     'current_user': 'user.serializers.CurrentUserSerializer',
+#     'token': 'djoser.serializers.TokenSerializer',
+#     'token_create': 'djoser.serializers.TokenCreateSerializer',
+#     # 'USER_CREATE_PASSWORD_RETYPE': True,
+# }
+
 # DJOSER = {
 #     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
 #     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
@@ -170,7 +201,6 @@ AUTH_USER_MODEL = 'user.User'
 #     'SEND_ACTIVATION_EMAIL': True,
 #     'SERIALIZERS': {},
 #     # mine
-#     'USER_CREATE_PASSWORD_RETYPE': True,
 #     'SEND_CONFIRMATION_EMAIL': True,
 #     # 'SET_PASSWORD_RETYPE': True,
 #     # 'LOGOUT_ON_PASSWORD_CHANGE': True, # Logout only works with token based authentication.

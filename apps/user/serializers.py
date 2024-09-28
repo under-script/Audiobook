@@ -2,12 +2,11 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
-from djoser.serializers import TokenCreateSerializer
-from icecream import ic
+from django.utils.text import slugify
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.fields import ReadOnlyField
 from rest_framework_simplejwt.tokens import RefreshToken
-from typing_extensions import ReadOnly
 
 from apps.user.models import UserCategory
 
@@ -159,7 +158,18 @@ class UserCategoryUpdateSerializer(serializers.ModelSerializer):
         fields = ["id", 'category']
         read_only_fields = ["id"]
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class CustomUserBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'username', 'email', 'phone', 'birth_date']
+        fields = ['id', 'full_name', 'username', 'email', 'phone', 'birth_date', 'image']
+
+
+class CustomUserCreateSerializer(UserCreateSerializer, CustomUserBaseSerializer):
+    class Meta(CustomUserBaseSerializer.Meta, UserCreateSerializer.Meta):
+        fields = CustomUserBaseSerializer.Meta.fields + ['password']
+
+
+class CustomUserSerializer(UserSerializer, CustomUserBaseSerializer):
+    class Meta(CustomUserBaseSerializer.Meta, UserSerializer.Meta):
+        fields = CustomUserBaseSerializer.Meta.fields
+
