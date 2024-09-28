@@ -29,6 +29,7 @@ urlpatterns = [
 ]
 
 api_urls = [
+    path('auth/', include('apps.user.router')),
     path('user/', include('apps.user.urls')),
     path('notification/', include('apps.notification.urls')),
     path('categories/', include('apps.category.urls')),
@@ -43,15 +44,16 @@ spectacular_urls = [
 
 jwt_urls = [
     # path('api-auth/', include('rest_framework.urls')),
-
-    # Custom JWT endpoints first
-    path('auth/jwt/create/', CustomTokenCreateView.as_view(), name='jwt_create'),
-    path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),
     # Then include Djoser's URLs
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+
+    # Custom JWT endpoints first
+    # path('auth/jwt/create/', CustomTokenCreateView.as_view(), name='jwt_create'),
+    # path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),
     # path('auth/', include('djoser.urls.jwt')),
-    path('auth/', include('drf_social_oauth2.urls')),
+    # path('auth/', include('drf_social_oauth2.urls')),
+    # path('auth/social/google/', SocialLoginView.as_view(), name='google_login'),
 ]
 
 urlpatterns += api_urls

@@ -15,6 +15,7 @@ class User(AbstractUser):
                               help_text='Upload an avatar image. If not provided, a default image will be used.')
     full_name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=100, unique=True)
+    birth_date = models.DateField(null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name='users', blank=True)
     remember_me = models.BooleanField(default=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
