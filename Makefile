@@ -3,14 +3,13 @@ gen-env:
 migrate:
 	python3 manage.py migrate
 run:
-	python3 manage.py runserver 8000
+	python3 manage.py runserver $(port)
 i:
-	pip install -r requirements/base.txt
+	pip install -r requirements/$(file_name).txt
 freeze:
-	pip freeze > requirements.txt
+	pip freeze > requirements/$(file_name).txt
 cru:
-	#  python manage.py createsuperuser --username admin --email admin@example.com
-	python manage.py createsuperuser --username superuser --email superuser@example.com
+	python manage.py createsuperuser --username $(username) --email $(email)
 migration:
 	python3 manage.py makemigrations
 create-not-author:

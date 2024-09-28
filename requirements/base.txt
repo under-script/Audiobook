@@ -1,3 +1,4 @@
+# Common requirements
 Django
 djangorestframework
 djoser
@@ -16,3 +17,4 @@ icecream
 celery
 drf_social_oauth2
 django-cors-headers
+django-jazzmin

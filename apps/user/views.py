@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from . import serializers
+from .forms import ResetPasswordForm
 from .models import UserCategory
 from .serializers import UserRegisterSerializer, ChangePasswordSerializer, UserSettingsSerializer, \
     CustomTokenCreateSerializer
@@ -233,6 +234,44 @@ def confirm_email(request, uid, token):
 
     # Redirect to the homepage
     return redirect("/")
+
+def reset_password(request, uid, token):
+    try:
+        # Decode the `uid` to get the user
+        uid = urlsafe_base64_decode(uid).decode()
+        user = get_object_or_404(User, pk=uid)
+
+        # Check if the token is valid using Django's default token generator
+        is_token_valid = default_token_generator.check_token(user, token)
+        if not is_token_valid:
+            raise ValidationError("Invalid token.")
+
+        # If the token is valid, confirm the email
+        messages.success(request, "Email successfully confirmed!")
+
+        # Redirect to the password reset confirmation page with the uid
+        return redirect("reset_password_confirm", uid=uid)
+
+    except (User.DoesNotExist, ValidationError, ValueError, TypeError, OverflowError):
+        messages.error(request, "Invalid confirmation link.")
+        return redirect("home")
+
+def reset_password_confirm(request, uid):
+    user = get_object_or_404(User, pk=uid)
+
+    if request.method == "POST":
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            # Process the form data and reset the password
+            new_password = form.cleaned_data['new_password']
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, "Password has been reset successfully!")
+            return redirect("home")
+    else:
+        form = ResetPasswordForm()
+
+    return render(request, "reset_password_confirm.html", {"form": form})
 
 def home(request):
     return render(request, 'index.html')

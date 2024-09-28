@@ -2,11 +2,13 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from AudioBook.settings import base
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AudioBook.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AudioBook.settings.local')
+    if base.DEBUG:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AudioBook.settings.production')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
