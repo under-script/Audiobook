@@ -1,5 +1,10 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
+from django.shortcuts import redirect, render, get_object_or_404
+from django.utils.http import urlsafe_base64_decode
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from icecream import ic
 from rest_framework import generics, status
@@ -204,3 +209,30 @@ class UserCategoryDeleteAPIView(generics.DestroyAPIView):
         cache.delete('categories')
         cache.delete(f'category_{pk}')
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def confirm_email(request, uid, token):
+    try:
+        # Decode the `uid` to get the user
+        uid = urlsafe_base64_decode(uid).decode()
+        user = get_object_or_404(User, pk=uid)
+
+        # Check if the token is valid using Django's default token generator
+        is_token_valid = default_token_generator.check_token(user, token)
+        if not is_token_valid:
+            raise ValidationError("Invalid token.")
+
+        # If the token is valid, confirm the email
+        user.is_active = True  # Adjust this field based on your model
+        user.save()
+
+        messages.success(request, "Email successfully confirmed!")
+
+    except (User.DoesNotExist, ValidationError, ValueError, TypeError, OverflowError) as e:
+        messages.error(request, "Invalid confirmation link.")
+
+    # Redirect to the homepage
+    return redirect("/")
+
+def home(request):
+    return render(request, 'index.html')

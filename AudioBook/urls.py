@@ -20,8 +20,10 @@ from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 from AudioBook import settings
+from apps.user.views import confirm_email, home
 
 urlpatterns = [
+    path('', home, name='home'),  # Home view
     path('admin/', admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
@@ -40,6 +42,7 @@ spectacular_urls = [
 ]
 
 jwt_urls = [
+    path("auth/confirm-email/<uid>/<token>", confirm_email, name='confirm_email'),
     # path('api-auth/', include('rest_framework.urls')),
     # Then include Djoser's URLs
     path('auth/', include('apps.user.router')),

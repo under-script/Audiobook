@@ -168,7 +168,13 @@ DJOSER = {
         'user_create': 'apps.user.serializers.CustomUserCreateSerializer',
         'user': 'apps.user.serializers.CustomUserSerializer',
         'current_user': 'apps.user.serializers.CustomUserSerializer',
-    }
+    },
+    'PASSWORD_RESET_CONFIRM_URL': '/auth/password-reset-confirm/{uid}/{token}',
+    # https://example.com/auth/confirm-email/Mw/bui50h-476924d8c76af469d7128c8b19d536c2
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'ACTIVATION_URL': 'auth/confirm-email/{uid}/{token}',
 }
 
 # DJOSER = {
@@ -195,16 +201,12 @@ DJOSER = {
 # }
 
 # DJOSER = {
-#     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
 #     'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-#     'ACTIVATION_URL': '#/activate/{uid}/{token}',
-#     'SEND_ACTIVATION_EMAIL': True,
 #     'SERIALIZERS': {},
 #     # mine
-#     'SEND_CONFIRMATION_EMAIL': True,
+
 #     # 'SET_PASSWORD_RETYPE': True,
 #     # 'LOGOUT_ON_PASSWORD_CHANGE': True, # Logout only works with token based authentication.
-#     # 'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
 # }
 
 EMAIL_USE_TLS = True

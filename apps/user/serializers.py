@@ -166,7 +166,7 @@ class CustomUserBaseSerializer(serializers.ModelSerializer):
 
 class CustomUserCreateSerializer(UserCreateSerializer, CustomUserBaseSerializer):
     class Meta(CustomUserBaseSerializer.Meta, UserCreateSerializer.Meta):
-        fields = CustomUserBaseSerializer.Meta.fields + ['password']
+        fields = ['email', 'password', 'birth_date']
 
 
 class CustomUserSerializer(UserSerializer, CustomUserBaseSerializer):
