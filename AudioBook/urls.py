@@ -19,48 +19,33 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
-from AudioBook import settings
-from apps.user.views import confirm_email, home, reset_password, reset_password_confirm
+from AudioBook.settings import local
 
 urlpatterns = [
-    path('', home, name='home'),  # Home view
     path('admin/', admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 api_urls = [
-    path('user/', include('apps.user.urls')),
     path('notification/', include('apps.notification.urls')),
-    path('categories/', include('apps.category.urls')),
+    path('genres/', include('apps.category.urls')),
 ]
 
 spectacular_urls = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # Optional UI:
-    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
-jwt_urls = [
-    path("auth/confirm-email/<uid>/<token>/", reset_password, name='confirm_email'),
-    path("auth/password-reset-confirm/<uid>/", reset_password_confirm, name='reset_password_confirm'),
-    # path('api-auth/', include('rest_framework.urls')),
-    # Then include Djoser's URLs
-    path('auth/', include('apps.user.router')),
-    # path('auth/', include('djoser.urls')),
+auth_urls = [
+    path('auth/', include('apps.user.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-
-    # Custom JWT endpoints first
-    # path('auth/jwt/create/', CustomTokenCreateView.as_view(), name='jwt_create'),
-    # path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='jwt_refresh'),
-    # path('auth/', include('djoser.urls.jwt')),
-    # path('auth/', include('drf_social_oauth2.urls')),
-    # path('auth/social/google/', SocialLoginView.as_view(), name='google_login'),
+    path('auth/', include('djoser.urls.jwt')),
 ]
 
 urlpatterns += api_urls
 urlpatterns += spectacular_urls
-urlpatterns += jwt_urls
+urlpatterns += auth_urls
 
-if settings.base.DEBUG:
-    urlpatterns += static(settings.base.MEDIA_URL, document_root=settings.base.MEDIA_ROOT)
+urlpatterns += static(local.MEDIA_URL, document_root=local.MEDIA_ROOT)

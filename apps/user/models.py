@@ -1,8 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django_extensions.db.models import TimeStampedModel
 
-from apps.base.TimeStampModel import TimeStampModel
 from apps.category.models import Category
 from apps.user.validators import validate_image
 
@@ -31,6 +31,7 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, birth_date, password, **extra_fields)
 
+
 class User(AbstractUser):
     password = models.CharField(max_length=128, null=True, blank=True)
     username = models.CharField(max_length=20, null=True, blank=True, unique=True)
@@ -41,7 +42,7 @@ class User(AbstractUser):
     full_name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(max_length=100, unique=True)
     birth_date = models.DateField(null=True, blank=True)
-    categories = models.ManyToManyField(Category, related_name='users', blank=True)
+    genres = models.ManyToManyField(Category, related_name='users', blank=True)
     remember_me = models.BooleanField(default=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
@@ -53,17 +54,10 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-class UserCategory(TimeStampModel):
+
+class UserCategory(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('user', 'category')
-
-    # def __str__(self):
-    #     return f"{self.user} - {self.category}"
-
-#
-# class UserProfile(TimeStampModel):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     categories = models.ManyToManyField(Category, through='UserCategory')

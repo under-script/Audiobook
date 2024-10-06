@@ -8,7 +8,6 @@ django-environ
 django-debug-toolbar
 drf-spectacular
 drf-material
-rest-framework-redesign
 django-redis
 djangorestframework-simplejwt
 django-ratelimit
@@ -18,3 +17,4 @@ celery
 drf_social_oauth2
 django-cors-headers
 django-jazzmin
+django-extensions

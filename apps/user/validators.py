@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 
+
 def validate_image(image):
     try:
         file_size = image.size if hasattr(image, 'size') else len(image.read())

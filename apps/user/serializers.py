@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
-from django.utils.text import slugify
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.fields import ReadOnlyField
@@ -132,8 +131,10 @@ class CustomTokenCreateSerializer(serializers.Serializer):
 
         return data
 
+
 class UserCategoryListSerializer(serializers.ModelSerializer):
     category_name = ReadOnlyField(source="category.name")
+
     class Meta:
         model = UserCategory
         fields = ["id", "category", "category_name"]
@@ -158,6 +159,7 @@ class UserCategoryUpdateSerializer(serializers.ModelSerializer):
         fields = ["id", 'category']
         read_only_fields = ["id"]
 
+
 class CustomUserBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -172,4 +174,3 @@ class CustomUserCreateSerializer(UserCreateSerializer, CustomUserBaseSerializer)
 class CustomUserSerializer(UserSerializer, CustomUserBaseSerializer):
     class Meta(CustomUserBaseSerializer.Meta, UserSerializer.Meta):
         fields = CustomUserBaseSerializer.Meta.fields
-

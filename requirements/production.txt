@@ -1,4 +1,0 @@
--r base.txt
-
-# Production specific requirements
-psycopg2-binary

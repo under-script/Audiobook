@@ -1,70 +1,52 @@
-from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django_extensions.db.models import TimeStampedModel
 
-from apps.base.TimeStampModel import TimeStampModel
 from apps.category.models import Category
 
-User = get_user_model()
 
-
-class Author(TimeStampModel):
+class Author(TimeStampedModel):
     name = models.CharField(max_length=255)
-    bio = models.TextField(null=True, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-    death_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
-class Narrator(TimeStampModel):
-    name = models.CharField(max_length=255)
-    bio = models.TextField(null=True, blank=True)
+def get_chapter_audio_upload_path(instance, filename):
+    # Use the ISBN of the related book for the audio file's path
+    return f'audios/{instance.book.isbn}/{filename}'
+
+
+def get_ebook_upload_path(instance, filename):
+    # Use the title of the book for the ebook file's path
+    return f'books/{instance.title}/{filename}'
+
+
+class Chapter(TimeStampedModel):
+    chapterId = models.AutoField(primary_key=True)
+    chapterName = models.CharField(max_length=255)
+    audio = models.FileField(upload_to=get_chapter_audio_upload_path)  # Dynamic upload path
+
+    # Assuming a foreign key to link chapters to a specific book
+    book = models.ForeignKey('Book', related_name='chapters', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.chapterName
 
 
-class Book(TimeStampModel):
-    title = models.CharField(max_length=255)
-    summary = models.TextField()
-    categories = models.ManyToManyField(Category, related_name='ebooks')
-    author = models.ForeignKey(Author, related_name='ebooks', on_delete=models.CASCADE)
-    publication_date = models.DateField()
-
-    isbn = models.CharField(max_length=13, unique=True)
-    page_count = models.PositiveSmallIntegerField()
-    # language = models.IntegerField(choices=LANGUAGE_CODE, default=LANGUAGE_CODE)
-    file_url = models.FileField(upload_to='ebooks/')  # Book file (e.g., PDF, EPUB)
-    image = models.ImageField(upload_to='covers/')
+class Book(TimeStampedModel):
+    poster = models.ImageField(upload_to='posters/', null=True, blank=True)
+    cover = models.ImageField(upload_to='covers/', null=True, blank=True)
+    title = models.CharField(max_length=255, unique=True)
+    author = models.ForeignKey('Author', related_name='books', on_delete=models.CASCADE)
+    rate = models.FloatField(
+        validators=[MinValueValidator(0.1), MaxValueValidator(5.0)]
+    )
+    categories = models.ManyToManyField(Category, related_name='books')
+    summary = models.TextField(max_length=3000, unique=True)
+    full_audio = models.FileField(null=True, blank=True)
+    ebook = models.FileField(upload_to=get_ebook_upload_path)  # Dynamic upload path
+    isbn = models.CharField(max_length=13, unique=True, null=True, blank=True)
 
     def __str__(self):
         return self.title
-
-
-class Audiobook(TimeStampModel):
-    ebook = models.ForeignKey(Book, related_name='audiobooks', on_delete=models.CASCADE)  # Relation to Book
-    publication_date = models.DateField()
-    narrator = models.ForeignKey(Narrator, related_name='audiobooks', on_delete=models.CASCADE)
-    duration = models.DurationField()
-    audio_file_url = models.FileField(upload_to='audiobooks/')  # Audiobook file (e.g., MP3)
-
-    def __str__(self):
-        return self.ebook.title
-
-
-class Review(TimeStampModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, related_name='reviews', on_delete=models.CASCADE, null=True, blank=True)
-    audiobook = models.ForeignKey(Audiobook, related_name='reviews', on_delete=models.CASCADE, null=True, blank=True)
-    rating = models.FloatField()
-    comment = models.TextField()
-
-    def __str__(self):
-        return f'Review by {self.user.username}'  # noqa
-
-
-class Bookmark(TimeStampModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, related_name='bookmarks', on_delete=models.CASCADE, null=True, blank=True)
-    time = models.IntegerField(null=True, blank=True)

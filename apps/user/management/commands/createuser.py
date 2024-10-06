@@ -1,10 +1,11 @@
-from django.core.management.base import BaseCommand
-from apps.user.models import User
+from datetime import datetime
+
 from django.core.exceptions import ValidationError
+from django.core.management.base import BaseCommand
 from django.core.validators import validate_email
 from django.db import IntegrityError
-import re
-from datetime import datetime
+
+from apps.user.models import User
 
 
 class Command(BaseCommand):

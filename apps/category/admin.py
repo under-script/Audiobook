@@ -1,8 +1,10 @@
 from django.contrib import admin
+
 from .models import Category
 
-class UserCategories(admin.ModelAdmin):
+
+class Usergenres(admin.ModelAdmin):
     list_display = ('name',)  # Assuming 'name' is a field in Category
 
-admin.site.register(Category, UserCategories)
 
+admin.site.register(Category, Usergenres)

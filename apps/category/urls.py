@@ -2,6 +2,8 @@ from django.urls import path
 
 from apps.category import views
 
+app_name = 'category_app'
+
 urlpatterns = [
     path('', views.CategoryListAPIView.as_view()),
     path('detail/<int:pk>/', views.CategoryDetailAPIView.as_view()),

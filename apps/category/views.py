@@ -15,18 +15,18 @@ class CategoryListAPIView(generics.ListAPIView):
     search_fields = ['name']
 
     def get_queryset(self):
-        categories = cache.get('categories')
-        ic(categories)
-        if categories is None:
-            categories = Category.objects.all()  # noqa
-            serializer = self.serializer_class(categories, many=True)
-            cache.set('categories', serializer.data)  # Store serialized data in cache
-            return categories
+        genres = cache.get('genres')
+        ic(genres)
+        if genres is None:
+            genres = Category.objects.all()  # noqa
+            serializer = self.serializer_class(genres, many=True)
+            cache.set('genres', serializer.data)  # Store serialized data in cache
+            return genres
         else:
             # Create a list of Category objects from the cached data
-            categories = [Category(**item) for item in categories]
+            genres = [Category(**item) for item in genres]
             # Use the Django model manager to create a queryset from the list
-            return Category.objects.filter(id__in=[category.id for category in categories])  # noqa
+            return Category.objects.filter(id__in=[category.id for category in genres])  # noqa
 
     @extend_schema(operation_id='listCategory', tags=['Category'])
     def get(self, request, *args, **kwargs):
@@ -64,7 +64,7 @@ class CategoryCreateAPIView(generics.CreateAPIView):
         response = super().post(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:
             # Invalidate the list cache when a new category is created
-            cache.delete('categories')
+            cache.delete('genres')
         return response
 
 
@@ -78,7 +78,7 @@ class CategoryUpdateAPIView(generics.UpdateAPIView):
         response = super().put(request, *args, **kwargs)
         if response.status_code == status.HTTP_200_OK:
             # Invalidate the list and detail cache when a category is updated
-            cache.delete('categories')
+            cache.delete('genres')
             pk = kwargs.get('pk')
             cache.delete(f'category_{pk}')
         return response
@@ -88,7 +88,7 @@ class CategoryUpdateAPIView(generics.UpdateAPIView):
         response = super().patch(request, *args, **kwargs)
         if response.status_code == status.HTTP_200_OK:
             # Invalidate the list and detail cache when a category is updated
-            cache.delete('categories')
+            cache.delete('genres')
             pk = kwargs.get('pk')
             cache.delete(f'category_{pk}')
         return response
@@ -105,6 +105,6 @@ class CategoryDeleteAPIView(generics.DestroyAPIView):
         pk = instance.pk
         self.perform_destroy(instance)
         # Invalidate the list and detail cache when a category is deleted
-        cache.delete('categories')
+        cache.delete('genres')
         cache.delete(f'category_{pk}')
         return Response(status=status.HTTP_204_NO_CONTENT)
