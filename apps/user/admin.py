@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils.html import format_html
 
+from apps.base.admin import BaseAdmin
 from apps.user.models import UserCategory
 
 User = get_user_model()
@@ -9,7 +10,7 @@ User = get_user_model()
 
 # Register your models here.
 
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(BaseAdmin):
     list_display = ['username', 'email', 'is_superuser', 'is_active', 'date_joined', 'get_avatar', 'full_name', 'phone',
                     'remember_me']
 
@@ -21,7 +22,7 @@ class UserAdmin(admin.ModelAdmin):
     get_avatar.short_description = 'Image'
 
 
-class UserCategoryAdmin(admin.ModelAdmin):
+class UserCategoryAdmin(BaseAdmin):
     list_display = ('user', 'category')
 
 

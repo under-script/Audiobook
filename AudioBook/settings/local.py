@@ -66,7 +66,9 @@ LOCAL_APPS = [
     'apps.category.apps.CategoryConfig',
     'apps.notification.apps.NotificationConfig',
     'apps.subscription.apps.SubscriptionConfig',
-    'apps.base.apps.BaseConfig',
+    'apps.book.apps.BookConfig',
+    'apps.chapter.apps.ChapterConfig',
+    'apps.author.apps.AuthorConfig',
 ]
 
 INSTALLED_APPS += LOCAL_APPS

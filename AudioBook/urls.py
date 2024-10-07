@@ -28,7 +28,9 @@ urlpatterns = [
 
 api_urls = [
     path('notification/', include('apps.notification.urls')),
-    path('genres/', include('apps.category.urls')),
+    path('categories/', include('apps.category.urls')),
+    path('books/', include('apps.book.urls')),
+    path('authors/', include('apps.author.urls')),
 ]
 
 spectacular_urls = [
