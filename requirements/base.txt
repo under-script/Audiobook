@@ -18,3 +18,4 @@ drf_social_oauth2
 django-cors-headers
 django-jazzmin
 django-extensions
+firebase-admin

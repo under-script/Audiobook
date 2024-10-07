@@ -14,6 +14,8 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+import firebase_admin
+from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -200,14 +202,14 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.SearchFilter',
     ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     # 'rest_framework.authentication.SessionAuthentication',
+    #     'rest_framework.authentication.TokenAuthentication',
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ],
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
@@ -234,3 +236,12 @@ SPECTACULAR_SETTINGS = {
     'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
     'REDOC_DIST': 'SIDECAR',
 }
+
+# Path to your service account key JSON file
+FIREBASE_ADMIN_CREDENTIALS = "/home/user/PycharmProjects/AudioBook/playground/credentials/serviceAccountKey.json"
+
+# Initialize the Firebase app
+firebase_cred = credentials.Certificate(FIREBASE_ADMIN_CREDENTIALS)
+firebase_admin.initialize_app(firebase_cred, {
+    'storageBucket': 'audiobook-50fe7.appspot.com'  # Use only the bucket name
+})

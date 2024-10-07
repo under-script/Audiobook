@@ -31,6 +31,7 @@ api_urls = [
     path('categories/', include('apps.category.urls')),
     path('books/', include('apps.book.urls')),
     path('authors/', include('apps.author.urls')),
+    path('ibi/', include('apps.base.urls')),
 ]
 
 spectacular_urls = [
