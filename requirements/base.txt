@@ -19,3 +19,4 @@ django-cors-headers
 django-jazzmin
 django-extensions
 firebase-admin
+django-storages

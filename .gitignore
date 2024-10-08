@@ -3,7 +3,7 @@
 *.pot
 *.pyc
 __pycache__
-media
+playground/media
 
 # Backup files #
 *.bak

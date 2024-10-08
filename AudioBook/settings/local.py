@@ -16,6 +16,8 @@ from pathlib import Path
 import environ
 import firebase_admin
 from firebase_admin import credentials
+from google.oauth2 import service_account
+from icecream import ic
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -153,6 +155,15 @@ DATABASES = {
     )
 }
 
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis as the message broker
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+
 CORS_ALLOWED_ORIGINS = [
     "https://example.com",
     "https://sub.example.com",
@@ -202,14 +213,14 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.SearchFilter',
     ),
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     # 'rest_framework.authentication.SessionAuthentication',
-    #     'rest_framework.authentication.TokenAuthentication',
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ),
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
@@ -237,11 +248,19 @@ SPECTACULAR_SETTINGS = {
     'REDOC_DIST': 'SIDECAR',
 }
 
-# Path to your service account key JSON file
-FIREBASE_ADMIN_CREDENTIALS = "/home/user/PycharmProjects/AudioBook/playground/credentials/serviceAccountKey.json"
+# Path to your Firebase service account key JSON file
+FIREBASE_ADMIN_CREDENTIALS = os.path.join(BASE_DIR, 'playground', 'credentials', 'serviceAccountKey.json')
 
 # Initialize the Firebase app
 firebase_cred = credentials.Certificate(FIREBASE_ADMIN_CREDENTIALS)
 firebase_admin.initialize_app(firebase_cred, {
     'storageBucket': 'audiobook-50fe7.appspot.com'  # Use only the bucket name
 })
+
+# Firebase Storage settings
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'audiobook-50fe7.appspot.com'
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(FIREBASE_ADMIN_CREDENTIALS)
+
+if __name__ == '__main__':
+    ic(BASE_DIR)

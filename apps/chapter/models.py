@@ -5,17 +5,15 @@ from apps.book.models import Book
 
 
 def get_chapter_audio_upload_path(instance, filename):
-    # Use the ISBN of the related book for the audio file's path
-    return f'audios/{instance.book.isbn}/{filename}'
-
+    # Use the ISBN of the related book for the audio file's upload path
+    return f'audiobooks/{instance.book.isbn}/chapters/{filename}'
 
 class Chapter(TimeStampedModel):
     chapterId = models.AutoField(primary_key=True)
-    chapterName = models.CharField(max_length=255)
-    audio = models.FileField(upload_to=get_chapter_audio_upload_path)  # Dynamic upload path
+    audio = models.FileField(upload_to=get_chapter_audio_upload_path)  # Use FileField to upload audio files
 
-    # Assuming a foreign key to link chapters to a specific book
+    # Foreign key to link chapters to a specific book using a string reference
     book = models.ForeignKey(Book, related_name='chapters', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.chapterName
+        return f"{self.book.title} - Chapter {self.chapterId}"
