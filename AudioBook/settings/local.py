@@ -63,6 +63,8 @@ THIRD_APPS = [
     'drf_spectacular_sidecar',
     'djoser',
     "corsheaders",
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 LOCAL_APPS = [
@@ -135,7 +137,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles/'
 MEDIA_ROOT = BASE_DIR / 'media/'
@@ -156,12 +158,16 @@ DATABASES = {
 }
 
 # Celery settings
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis as the message broker
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+# CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+# CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -261,6 +267,9 @@ firebase_admin.initialize_app(firebase_cred, {
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'audiobook-50fe7.appspot.com'
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(FIREBASE_ADMIN_CREDENTIALS)
+
+# Optional: Define media URL for Firebase-hosted files
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 
 if __name__ == '__main__':
     ic(BASE_DIR)

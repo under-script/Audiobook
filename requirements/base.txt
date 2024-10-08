@@ -20,3 +20,7 @@ django-jazzmin
 django-extensions
 firebase-admin
 django-storages
+watchdog
+django-celery-results
+flower
+django-celery-beat

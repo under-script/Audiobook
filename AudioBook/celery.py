@@ -11,6 +11,9 @@ app = Celery('AudioBook')
 # Load task modules from all registered Django app configs.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
+# Ensure connection retries during startup in Celery 6.0+
+app.conf.broker_connection_retry_on_startup = True
+
 # Autodiscover tasks from all installed apps
 app.autodiscover_tasks()
 

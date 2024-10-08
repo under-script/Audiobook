@@ -34,15 +34,21 @@ class Book(TimeStampedModel):
 @receiver(pre_save, sender=Book)
 def upload_files(sender, instance, **kwargs):
     try:
-        from .tasks import upload_files_to_firebase  # Import inside the function to avoid circular import
+        from .tasks import upload_files_to_firebase
 
-        if instance.poster and not instance.poster_url:
-            upload_files_to_firebase.delay(instance.poster.path, 'poster', instance.id)
+        if instance.poster:
+            upload_files_to_firebase.delay(file_field=instance.poster.path, file_type='poster', isbn=instance.isbn,
+                                           folder='audiobooks', subfolder='posters')
 
-        if instance.cover and not instance.cover_url:
-            upload_files_to_firebase.delay(instance.cover.path, 'cover', instance.id)
+        if instance.cover:
+            upload_files_to_firebase.delay(file_field=instance.cover.path, file_type='cover', isbn=instance.isbn,
+                                           folder='audiobooks', subfolder='covers')
 
-        if instance.ebook and not instance.ebook_url:
-            upload_files_to_firebase.delay(instance.ebook.path, 'ebook', instance.id)
+        if instance.ebook:
+            upload_files_to_firebase.delay(file_field=instance.ebook.path, file_type='ebook', isbn=instance.isbn,
+                                           folder='audiobooks', subfolder='ebooks')
+
     except ImportError as e:
         logger.error(f"Failed to import tasks module: {e}")
+    except Exception as e:
+        logger.error(f"Error during pre-save signal for book {instance.isbn}: {str(e)}")

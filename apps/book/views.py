@@ -53,6 +53,6 @@ class FileUploadView(APIView):
             return Response({"error": "Only mp3 files are allowed."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Upload file to Firebase Storage
-        public_url = upload_to_firebase(file=file_obj, file_name=file_name, folder='audios', subfolder=subfolder)
+        public_url = upload_to_firebase(file_path=file_name, file_name=file_name, folder='audios', subfolder=subfolder)
 
         return Response({"url": public_url}, status=status.HTTP_200_OK)
