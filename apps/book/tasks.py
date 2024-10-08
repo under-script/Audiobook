@@ -1,17 +1,12 @@
 import os
 from celery import shared_task
 from icecream import ic
-
-from .models import Book
+from .models import Book, logger
 from .firebase_storage import upload_to_firebase
 
 
-@shared_task
-def upload_files_to_firebase(file_field, file_type, isbn, folder='audiobooks', subfolder=None):
-    ic(file_field)
-    ic(file_type)
-    ic(isbn)
-
+@shared_task(bind=True)
+def upload_files_to_firebase(self, file_field, file_type, isbn, folder='audiobooks', subfolder=None):
     try:
         book = Book.objects.get(isbn=isbn)
         file_name = os.path.basename(file_field)
@@ -25,7 +20,13 @@ def upload_files_to_firebase(file_field, file_type, isbn, folder='audiobooks', s
 
         book.save()
 
+        # Return the URL or a success message
+        return f"Uploaded {file_type} for ISBN {isbn}: {book.poster_url or book.cover_url or book.ebook_url}"
+
     except Book.DoesNotExist:
-        ic(f"Book with ISBN {isbn} not found.")
+        self.update_state(state='FAILURE', meta={'error': 'Book not found'})
+        return None
     except Exception as e:
-        ic(f"Error uploading file to Firebase: {str(e)}")
+        self.update_state(state='FAILURE', meta={'error': str(e)})
+        return None
+

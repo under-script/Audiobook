@@ -36,15 +36,15 @@ def upload_files(sender, instance, **kwargs):
     try:
         from .tasks import upload_files_to_firebase
 
-        if instance.poster:
+        if instance.poster and not instance.poster_url:
             upload_files_to_firebase.delay(file_field=instance.poster.path, file_type='poster', isbn=instance.isbn,
                                            folder='audiobooks', subfolder='posters')
 
-        if instance.cover:
+        if instance.cover and not instance.cover_url:
             upload_files_to_firebase.delay(file_field=instance.cover.path, file_type='cover', isbn=instance.isbn,
                                            folder='audiobooks', subfolder='covers')
 
-        if instance.ebook:
+        if instance.ebook and not instance.ebook_url:
             upload_files_to_firebase.delay(file_field=instance.ebook.path, file_type='ebook', isbn=instance.isbn,
                                            folder='audiobooks', subfolder='ebooks')
 
